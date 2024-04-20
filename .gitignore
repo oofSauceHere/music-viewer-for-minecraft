@@ -1,3 +1,5 @@
+!**/src/main/resources/app.properties
+
 # gradle
 
 .gradle/
