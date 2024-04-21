@@ -1,9 +1,11 @@
 package net.sauce.spotifyintegrationmod.spotify;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 
-public class HttpUtils {
+public class ServerUtils {
     // allows for cleaner code when stringify-ing query params
     public static String mapToQuery(HashMap<String, String> queryMap) {
         if(queryMap == null) return null;
@@ -33,8 +35,11 @@ public class HttpUtils {
         return queryMap;
     }
 
-    // cryptographically random string for session purposes
+    // Cryptographically random string for session purposes
     public static String randomString(int len) {
-        return "hello chat";
+        SecureRandom rng = new SecureRandom();
+        byte[] bytes = new byte[len];
+        rng.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 }

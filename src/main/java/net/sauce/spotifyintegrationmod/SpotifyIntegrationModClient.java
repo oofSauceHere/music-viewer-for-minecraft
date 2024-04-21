@@ -2,9 +2,10 @@ package net.sauce.spotifyintegrationmod;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.MinecraftClient;
 import net.sauce.spotifyintegrationmod.client.SongHudOverlay;
 import net.sauce.spotifyintegrationmod.event.KeyInputHandler;
-import net.sauce.spotifyintegrationmod.spotify.DataThread;
+import net.sauce.spotifyintegrationmod.spotify.threads.DataThread;
 
 public class SpotifyIntegrationModClient implements ClientModInitializer {
     @Override

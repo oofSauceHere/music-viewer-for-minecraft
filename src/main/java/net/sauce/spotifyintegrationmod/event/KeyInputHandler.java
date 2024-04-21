@@ -2,10 +2,13 @@ package net.sauce.spotifyintegrationmod.event;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.sauce.spotifyintegrationmod.spotify.AuthThread;
-import net.sauce.spotifyintegrationmod.spotify.SpotifyServer;
+import net.sauce.spotifyintegrationmod.client.SongHudOverlay;
+import net.sauce.spotifyintegrationmod.spotify.AuthServer;
+import net.sauce.spotifyintegrationmod.spotify.threads.AuthThread;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyInputHandler {
@@ -18,23 +21,28 @@ public class KeyInputHandler {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             try {
                 if (displaySongKey.wasPressed()) {
-                    // We need to confirm that we have an access token and that the user is not
-                    // currently going through authentication
-                    if(!SpotifyServer.authorized) {
-                        if(!inAuthProcess) {
+                    // We need to confirm that we have an access token before proceeding
+                    if(!AuthServer.authorized) {
                             // If we have no access token, we open a browser and run the auth server for the user to connect to Spotify
-                            SpotifyServer.runServer();
-                            Runtime rt = Runtime.getRuntime();
-                            String url = "http://localhost:8080/login";
-                            rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
-                            inAuthProcess = true;
-
+                        if(!inAuthProcess) {
                             // A new thread will handle authentication because otherwise the game client will be stopped.
+                            AuthServer.runServer();
                             new Thread(new AuthThread()).start();
+                            inAuthProcess = true;
+                        }
+
+                        // only works on windows!!
+                        String os = System.getProperty("os.name").toLowerCase();
+                        Runtime rt = Runtime.getRuntime();
+                        String url = "http://localhost:8080/login";
+                        if(os.indexOf("win") >= 0) {
+                            rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+                        } else if(os.indexOf("mac") >= 0) {
+                            rt.exec("open " + url);
                         }
                     } else {
                         // Alternates showSong between 1 and -1 so that the song HUD element is toggleable.
-                        SpotifyServer.showSong *= -1;
+                        SongHudOverlay.showSong *= -1;
                     }
                 }
             } catch(Exception e) {

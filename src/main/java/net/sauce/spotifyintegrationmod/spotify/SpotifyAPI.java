@@ -1,74 +1,38 @@
 package net.sauce.spotifyintegrationmod.spotify;
 
-import com.sun.net.httpserver.HttpServer;
-
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
 import net.sauce.spotifyintegrationmod.SpotifyIntegrationMod;
-import net.sauce.spotifyintegrationmod.spotify.http.LoginHandler;
-import net.sauce.spotifyintegrationmod.spotify.http.CallbackHandler;
-import net.sauce.spotifyintegrationmod.spotify.http.RefreshTokenHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-public class SpotifyServer {
-    // should these be public??
-    public static Properties props;
-    public static Map<String, String> songData;
-    public static Map<Identifier, NativeImage> playlistCovers;
-    public static Identifier currentId;
-    public static HttpServer server;
-
-    // half of these shouldnt be here
-    public static int showSong = -1;
-    public static boolean authorized = false;
-
-    // It's in the name
-    public static void runServer() throws IOException {
-        // perhaps these shouldnt be in a function
-        songData = new HashMap<>();
-        playlistCovers = new HashMap<>();
-        currentId = null;
-
-        // Creates an HTTP server and handles routing (well, technically doles out the handling roles to 3 other functions)
-        server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/login", new LoginHandler());
-        server.createContext("/callback", new CallbackHandler());
-        server.createContext("/refresh_token", new RefreshTokenHandler());
-
-        // Initializes properties object to store app properties for easy access in other classes
-        props = new Properties();
-        String path = new File("C:/Users/dwman/Desktop/Coding/Spotify Integration Mod 1.20.4/src/main/resources/app.properties").getAbsolutePath();
-        props.load(new FileInputStream(path));
-
-        System.out.println("Server starting...");
-        server.start();
-    }
-
-    // I think this one's pretty clear too
-    public static void closeServer() {
-        server.stop(0);
-    }
+public class SpotifyAPI {
+    public static Map<String, String> songData = new HashMap<>();
+    public static Map<Identifier, NativeImage> playlistCovers = new HashMap<>();
+    public static Identifier currentId = null;
 
     // Queries the Spotify API for currently playing track and stores the data for use by other classes/functions
     public static void getData() throws MalformedURLException, ProtocolException, IOException {
+        if(!AuthServer.serverStarted) return;
+
         // Creates connection to API endpoint
         String endpoint = "https://api.spotify.com/v1/me/player/currently-playing";
         HttpURLConnection getConn = (HttpURLConnection) new URL(endpoint).openConnection();
         getConn.setRequestMethod("GET");
-        getConn.setRequestProperty("Authorization", "Bearer " + SpotifyServer.props.getProperty("ACCESS_TOKEN"));
+        getConn.setRequestProperty("Authorization", "Bearer " + AuthServer.props.getProperty("ACCESS_TOKEN"));
         getConn.setDoOutput(true);
 
         // If the response is good, we've recieved valuable data
@@ -127,23 +91,5 @@ public class SpotifyServer {
             songData.put("songName", null);
             currentId = null;
         }
-    }
-
-    // This isn't done. Or at least it's never used. But it should be used.
-    public static void getRefreshToken() throws MalformedURLException, ProtocolException, IOException{
-        String endpoint = "http://localhost:8080/refresh_token";
-        HttpURLConnection getConn = (HttpURLConnection) new URL(endpoint).openConnection();
-        getConn.setRequestMethod("GET");
-        getConn.setDoOutput(true);
-
-        HashMap<String, String> queryMap = new HashMap<>();
-        queryMap.put("refresh_token", props.getProperty("REFRESH_TOKEN"));
-
-        OutputStream getConnOs = getConn.getOutputStream();
-        getConnOs.write(HttpUtils.mapToQuery(queryMap).getBytes());
-
-        int getResponseCode = getConn.getResponseCode();
-        System.out.println(getResponseCode);
-        getConn.disconnect();
     }
 }

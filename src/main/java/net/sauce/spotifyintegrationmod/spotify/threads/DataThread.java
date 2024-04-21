@@ -1,6 +1,8 @@
-package net.sauce.spotifyintegrationmod.spotify;
+package net.sauce.spotifyintegrationmod.spotify.threads;
 
 import net.minecraft.client.MinecraftClient;
+import net.sauce.spotifyintegrationmod.spotify.AuthServer;
+import net.sauce.spotifyintegrationmod.spotify.SpotifyAPI;
 
 // This thread queries the Spotify API every second to see if the song has changed.
 public class DataThread implements Runnable {
@@ -9,8 +11,8 @@ public class DataThread implements Runnable {
         while(true) {
             try {
                 // The client must be open and an access token must have been acquired before attempting to get data
-                if(SpotifyServer.authorized && MinecraftClient.getInstance() != null && MinecraftClient.getInstance().getTextureManager() != null) {
-                    SpotifyServer.getData();
+                if(AuthServer.authorized && MinecraftClient.getInstance() != null && MinecraftClient.getInstance().getTextureManager() != null) {
+                    SpotifyAPI.getData();
                 }
                 Thread.sleep(1000);
             } catch(Exception e) {

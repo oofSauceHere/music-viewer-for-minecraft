@@ -1,10 +1,10 @@
-package net.sauce.spotifyintegrationmod.spotify.http;
+package net.sauce.spotifyintegrationmod.spotify.server;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import net.sauce.spotifyintegrationmod.spotify.HttpUtils;
-import net.sauce.spotifyintegrationmod.spotify.SpotifyServer;
+import net.sauce.spotifyintegrationmod.spotify.AuthServer;
+import net.sauce.spotifyintegrationmod.spotify.ServerUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class CallbackHandler implements HttpHandler {
         responseHeaders.add("Access-Control-Allow-Methods", "GET");
 
         String queryString = exchange.getRequestURI().getQuery();
-        HashMap<String, String> queryMap = HttpUtils.queryToMap(queryString);
+        HashMap<String, String> queryMap = ServerUtils.queryToMap(queryString);
 
         String code = queryMap.get("code");
         String state = String.join(" ", queryMap.get("state").split("\\+"));
@@ -59,7 +59,7 @@ public class CallbackHandler implements HttpHandler {
         } else {
             HashMap<String, String> authQueryMap = new HashMap<>();
             authQueryMap.put("code", code);
-            authQueryMap.put("redirect_uri", SpotifyServer.props.getProperty("REDIRECT_URI"));
+            authQueryMap.put("redirect_uri", AuthServer.props.getProperty("REDIRECT_URI"));
             authQueryMap.put("grant_type", "authorization_code");
 
             String endpoint = "https://accounts.spotify.com/api/token";
@@ -67,12 +67,12 @@ public class CallbackHandler implements HttpHandler {
             postConn.setRequestMethod("POST");
             postConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            String authProps = SpotifyServer.props.getProperty("CLIENT_ID") + ":" + SpotifyServer.props.getProperty("CLIENT_SECRET");
+            String authProps = AuthServer.props.getProperty("CLIENT_ID") + ":" + AuthServer.props.getProperty("CLIENT_SECRET");
             postConn.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString(authProps.getBytes()));
             postConn.setDoOutput(true);
 
             OutputStream postConnOs = postConn.getOutputStream();
-            postConnOs.write(HttpUtils.mapToQuery(authQueryMap).getBytes());
+            postConnOs.write(ServerUtils.mapToQuery(authQueryMap).getBytes());
             postConnOs.flush();
             postConnOs.close();
 
@@ -90,7 +90,7 @@ public class CallbackHandler implements HttpHandler {
                 String[] pairs = responseBody.toString().replace("{", "").replace("}", "").replace("\"", "").split(",");
                 for(String i : pairs) {
                     String[] pair = i.split(":");
-                    SpotifyServer.props.setProperty(pair[0].toUpperCase(), pair[1]);
+                    AuthServer.props.setProperty(pair[0].toUpperCase(), pair[1]);
                 }
 
                 postConn.disconnect();

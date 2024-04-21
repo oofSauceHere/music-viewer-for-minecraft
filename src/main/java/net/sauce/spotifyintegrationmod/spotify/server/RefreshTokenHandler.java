@@ -1,9 +1,9 @@
-package net.sauce.spotifyintegrationmod.spotify.http;
+package net.sauce.spotifyintegrationmod.spotify.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import net.sauce.spotifyintegrationmod.spotify.HttpUtils;
-import net.sauce.spotifyintegrationmod.spotify.SpotifyServer;
+import net.sauce.spotifyintegrationmod.spotify.AuthServer;
+import net.sauce.spotifyintegrationmod.spotify.ServerUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class RefreshTokenHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String queryString = exchange.getRequestURI().getQuery();
-        HashMap<String, String> queryMap = HttpUtils.queryToMap(queryString);
+        HashMap<String, String> queryMap = ServerUtils.queryToMap(queryString);
 
         String refreshToken = queryMap.get("refresh_token");
 
@@ -31,12 +31,12 @@ public class RefreshTokenHandler implements HttpHandler {
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-        String authProps = SpotifyServer.props.getProperty("CLIENT_ID") + ":" + SpotifyServer.props.getProperty("CLIENT_SECRET");
+        String authProps = AuthServer.props.getProperty("CLIENT_ID") + ":" + AuthServer.props.getProperty("CLIENT_SECRET");
         conn.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString(authProps.getBytes()));
         conn.setDoOutput(true);
 
         OutputStream connOs = conn.getOutputStream();
-        connOs.write(HttpUtils.mapToQuery(authQueryMap).getBytes());
+        connOs.write(ServerUtils.mapToQuery(authQueryMap).getBytes());
         connOs.flush();
         connOs.close();
 
@@ -54,7 +54,7 @@ public class RefreshTokenHandler implements HttpHandler {
             String[] pairs = responseBody.toString().replace("{", "").replace("}", "").replace("\"", "").split(",");
             for(String i : pairs) {
                 String[] pair = i.split(":");
-                SpotifyServer.props.setProperty(pair[0].toUpperCase(), pair[1]);
+                AuthServer.props.setProperty(pair[0].toUpperCase(), pair[1]);
             }
 
             conn.disconnect();
