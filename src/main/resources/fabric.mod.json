@@ -3,7 +3,7 @@
 	"id": "spotify-integration-mod",
 	"version": "${version}",
 	"name": "Spotify Integration Mod",
-	"description": "Puts a little GUI element on the screen showing what's currently playing on Spotify.",
+	"description": "Creates a HUD element in the top left corner that shows what's currently playing on Spotify.",
 	"authors": [
 		"oofSauce"
 	],
