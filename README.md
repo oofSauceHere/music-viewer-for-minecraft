@@ -1,7 +1,7 @@
 # spotify-integration-mod
 Creates a HUD element in the top left corner that shows what's currently playing on Spotify.
 
-This isn't done but as of now it functions (on my computer). I'm working on making it useable for other people right now, but this is both my first foray into Minecraft modding *and* my first time retrieving data from a REST API. You'd think I'd have started with Javascript for the latter, but no. I didn't.
+This isn't done but as of now it functions (on my computer). I'm working on making it useable for other people right now, but it may take a little as this is both my first foray into Minecraft modding *and* my first time retrieving data from a REST API. You'd think I'd have started with Javascript for the latter, but no. I didn't.
 
 Though this is supposed to be a description of the project and how to install it, I figured I'd share the sources I used to figure out how to piece this together. Spotify has a great [web API documentation](https://developer.spotify.com/documentation/web-api) (which I'm sure most web developers know about), and [Kaupenjoe on YouTube](https://www.youtube.com/@ModdingByKaupenjoe) has useful tutorials on how to mod for most versions and mod loaders.
 
