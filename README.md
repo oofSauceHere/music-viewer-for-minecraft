@@ -1,5 +1,5 @@
-# spotify-integration-mod
-Creates a HUD element in the top left corner that shows what's currently playing on Spotify.
+# music-viewer-for-minecraft
+Creates a HUD element in the top left corner of the Minecraft screen that shows what's currently playing on Spotify.
 
 This isn't done but as of now it functions (on my computer). I'm working on making it useable for other people right now, but it may take a little as this is both my first foray into Minecraft modding *and* my first time retrieving data from a REST API. You'd think I'd have started with Javascript for the latter, but no. I didn't.
 
