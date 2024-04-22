@@ -1,6 +1,7 @@
 package net.sauce.spotifyintegrationmod.spotify.threads;
 
 import net.minecraft.client.MinecraftClient;
+import net.sauce.spotifyintegrationmod.client.SongHudOverlay;
 import net.sauce.spotifyintegrationmod.spotify.AuthServer;
 import net.sauce.spotifyintegrationmod.spotify.SpotifyAPI;
 
@@ -11,10 +12,11 @@ public class DataThread implements Runnable {
         while(true) {
             try {
                 // The client must be open and an access token must have been acquired before attempting to get data
-                if(AuthServer.authorized && MinecraftClient.getInstance() != null && MinecraftClient.getInstance().getTextureManager() != null) {
+                if(AuthServer.authorized && MinecraftClient.getInstance() != null &&
+                        MinecraftClient.getInstance().getTextureManager() != null && SongHudOverlay.showSong == 1) {
                     SpotifyAPI.getData();
                 }
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch(Exception e) {
                 // This catches any exception, which is probably not good practice. This time, however, I CARE about good practice,
                 // so it'll be changed later.

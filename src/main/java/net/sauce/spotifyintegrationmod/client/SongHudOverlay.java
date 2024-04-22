@@ -3,27 +3,30 @@ package net.sauce.spotifyintegrationmod.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.util.Identifier;
 import net.sauce.spotifyintegrationmod.SpotifyIntegrationMod;
 import net.sauce.spotifyintegrationmod.spotify.SpotifyAPI;
 
+import java.awt.font.FontRenderContext;
+
 public class SongHudOverlay implements HudRenderCallback {
     public static Identifier SHADOW = new Identifier(SpotifyIntegrationMod.MOD_ID, "textures/shadow.png");
+    public static Identifier SPOTIFY_ICON = new Identifier(SpotifyIntegrationMod.MOD_ID, "textures/icon.png");
+    MinecraftClient client = MinecraftClient.getInstance();
     public static int showSong = -1;
 
     // Perhaps add an animation to the text showing up because showing up abruptly doesn't look good
     @Override
     public void onHudRender(DrawContext drawContext, float tickDelta) {
-        MinecraftClient client = MinecraftClient.getInstance();
-
-        // I don't know what this does.
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
         // Renders the song's image, title, and artist name if a song is currently playing. Otherwise, renders "No song playing."
         if(showSong == 1) {
+            // I don't know what this does.
+            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
             if(SpotifyAPI.currentId == null) {
                 drawContext.drawText(client.textRenderer, "No song playing", 10, 10, 16777215, true);
             } else {
@@ -43,6 +46,9 @@ public class SongHudOverlay implements HudRenderCallback {
                 // I'm not really sure how the int-to-rgb conversion works yet.
                 drawContext.drawText(client.textRenderer, alteredSongName, 40, 11, 16776960, true);
                 drawContext.drawText(client.textRenderer, alteredArtistName, 40, 21, 16777215, true);
+
+                int textWidth = Math.max(client.textRenderer.getWidth(alteredSongName), client.textRenderer.getWidth(alteredArtistName));
+                drawContext.drawTexture(SPOTIFY_ICON, 53+textWidth, 13, 0, 0, 14, 14, 14, 14);
             }
         }
     }

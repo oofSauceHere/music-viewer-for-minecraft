@@ -1,9 +1,11 @@
 package net.sauce.spotifyintegrationmod.spotify.server;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import net.sauce.spotifyintegrationmod.spotify.AuthServer;
 import net.sauce.spotifyintegrationmod.spotify.ServerUtils;
+import org.apache.commons.compress.archivers.zip.ScatterZipOutputStream;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -60,6 +62,11 @@ public class RefreshTokenHandler implements HttpHandler {
             conn.disconnect();
         }
 
-        exchange.sendResponseHeaders(200, 0);
+        String response = "Token refreshed";
+        exchange.sendResponseHeaders(200, response.length());
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.flush();
+        os.close();
     }
 }

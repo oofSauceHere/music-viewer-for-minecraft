@@ -36,26 +36,19 @@ public class AuthServer {
         serverStarted = true;
     }
 
-    // I think this one's pretty clear too
-    public static void closeServer() {
-        server.stop(0);
-    }
-
-    // This isn't done. Or at least it's never used. But it should be used.
-    public static void getRefreshToken() throws MalformedURLException, ProtocolException, IOException{
+    public static void getRefreshToken() throws MalformedURLException, ProtocolException, IOException {
+        // Queries for get requests are embedded in the url, while they're sent in the body for post requests.
         String endpoint = "http://localhost:8080/refresh_token";
-        HttpURLConnection getConn = (HttpURLConnection) new URL(endpoint).openConnection();
-        getConn.setRequestMethod("GET");
-        getConn.setDoOutput(true);
-
         HashMap<String, String> queryMap = new HashMap<>();
         queryMap.put("refresh_token", props.getProperty("REFRESH_TOKEN"));
 
-        OutputStream getConnOs = getConn.getOutputStream();
-        getConnOs.write(ServerUtils.mapToQuery(queryMap).getBytes());
+        HttpURLConnection getConn = (HttpURLConnection) new URL(endpoint + "?" + ServerUtils.mapToQuery(queryMap)).openConnection();
+        getConn.setRequestMethod("GET");
+        getConn.setDoOutput(true);
 
         int getResponseCode = getConn.getResponseCode();
-        System.out.println(getResponseCode);
+        // Should throw an error, probably.
+        if(getResponseCode != HttpURLConnection.HTTP_OK) System.err.println("Unable to get refresh token");
         getConn.disconnect();
     }
 }

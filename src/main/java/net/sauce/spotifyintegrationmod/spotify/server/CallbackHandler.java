@@ -96,7 +96,7 @@ public class CallbackHandler implements HttpHandler {
                 postConn.disconnect();
             }
 
-            String response = "<html><body><h1>something worked</h1></body></html>";
+            String response = "<html><body><h1>go away</h1></body></html>";
             exchange.sendResponseHeaders(200, response.length());
             responseHeaders.set("Set-Cookie", "spotify_auth_state=" + state + ";expires=" + Instant.now().minus(1, ChronoUnit.DAYS).toString());
             OutputStream os = exchange.getResponseBody();

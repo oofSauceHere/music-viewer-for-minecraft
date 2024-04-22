@@ -37,6 +37,7 @@ public class SpotifyAPI {
 
         // If the response is good, we've recieved valuable data
         int getResponseCode = getConn.getResponseCode();
+        // System.out.println("Response Code: " + getResponseCode);
         if (getResponseCode == HttpURLConnection.HTTP_OK) {
             // Responsible for reading in the response data
             BufferedReader in = new BufferedReader(new InputStreamReader(getConn.getInputStream()));
@@ -54,7 +55,7 @@ public class SpotifyAPI {
             Iterator<JsonNode> elements = root.path("item").path("album").path("images").elements();
 
             // This project only cares about the song's image, title, and artist name. The id is included for reference later.
-            String imageUrl = elements.next().get("url").toString().replace("\"", "");
+            String imageUrl = elements.hasNext() ? elements.next().get("url").toString().replace("\"", "") : null;
             String artistName = root.path("item").path("artists").elements().next().get("name").toString().replace("\"", "");
             String songName = root.path("item").get("name").toString().replace("\"", "");
             String songId = root.path("item").get("id").toString().replace("\"", "");
@@ -73,7 +74,7 @@ public class SpotifyAPI {
             if(id.equals(currentId)) return;
 
             currentId = id;
-            if(!playlistCovers.containsKey(id)) {
+            if(!playlistCovers.containsKey(id) && imageUrl != null) {
                 // Annoyingly, spotify stores album covers as jpgs, but we can work around that
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 BufferedImage jpegImage = ImageIO.read(new URL(imageUrl).openStream());
