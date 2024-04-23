@@ -14,6 +14,7 @@ import net.sauce.spotifyintegrationmod.spotify.server.RefreshTokenHandler;
 public class AuthServer {
     // Should these be public??
     public static Properties props;
+    public static long expiryTime;
     public static HttpServer server;
     public static boolean authorized = false;
     public static boolean serverStarted = false;

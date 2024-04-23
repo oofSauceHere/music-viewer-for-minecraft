@@ -57,6 +57,9 @@ public class RefreshTokenHandler implements HttpHandler {
             for(String i : pairs) {
                 String[] pair = i.split(":");
                 AuthServer.props.setProperty(pair[0].toUpperCase(), pair[1]);
+                if(pair[0].toUpperCase().equals("EXPIRES_IN")) {
+                    AuthServer.expiryTime = System.currentTimeMillis() + Long.parseLong(pair[1])*1000;
+                }
             }
 
             conn.disconnect();

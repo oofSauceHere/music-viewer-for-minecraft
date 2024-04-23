@@ -15,6 +15,7 @@ import java.awt.font.FontRenderContext;
 public class SongHudOverlay implements HudRenderCallback {
     public static Identifier SHADOW = new Identifier(SpotifyIntegrationMod.MOD_ID, "textures/shadow.png");
     public static Identifier SPOTIFY_ICON = new Identifier(SpotifyIntegrationMod.MOD_ID, "textures/icon.png");
+    public static Identifier SPOTIFY_ICON_SHADOW = new Identifier(SpotifyIntegrationMod.MOD_ID, "textures/icon_shadow.png");
     MinecraftClient client = MinecraftClient.getInstance();
     public static int showSong = -1;
 
@@ -48,7 +49,8 @@ public class SongHudOverlay implements HudRenderCallback {
                 drawContext.drawText(client.textRenderer, alteredArtistName, 40, 21, 16777215, true);
 
                 int textWidth = Math.max(client.textRenderer.getWidth(alteredSongName), client.textRenderer.getWidth(alteredArtistName));
-                drawContext.drawTexture(SPOTIFY_ICON, 53+textWidth, 13, 0, 0, 14, 14, 14, 14);
+                drawContext.drawTexture(SPOTIFY_ICON_SHADOW, 53+textWidth, 13, 0, 0, 15, 15, 15, 15);
+                drawContext.drawTexture(SPOTIFY_ICON, 52+textWidth, 12, 0, 0, 15, 15, 15, 15);
             }
         }
     }
