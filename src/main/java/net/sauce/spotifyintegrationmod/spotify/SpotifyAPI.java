@@ -29,7 +29,8 @@ public class SpotifyAPI {
         if(!AuthServer.serverStarted) return;
 
         // Creates connection to API endpoint
-        String endpoint = "https://api.spotify.com/v1/me/player/currently-playing";
+        String endpoint = "https://api.spotify.com/v1/me/player/currently-playing?additional_types=episode";
+
         HttpURLConnection getConn = (HttpURLConnection) new URL(endpoint).openConnection();
         getConn.setRequestMethod("GET");
         getConn.setRequestProperty("Authorization", "Bearer " + AuthServer.props.getProperty("ACCESS_TOKEN"));
@@ -52,22 +53,32 @@ public class SpotifyAPI {
             // well, dependencies so I can get a strong foundation) but parsing is a Demonic Task so here's this instead.
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(responseBody.toString());
-            Iterator<JsonNode> elements = root.path("item").path("album").path("images").elements();
+            String type = root.get("currently_playing_type").toString().replace("\"", "");
 
             // This project only cares about the song's image, title, and artist name. The id is included for reference later.
+            Iterator<JsonNode> elements = type.equals("track") ?
+                    root.path("item").path("album").path("images").elements() :
+                    root.path("item").path("show").path("images").elements();
             String imageUrl = elements.hasNext() ? elements.next().get("url").toString().replace("\"", "") : null;
-            String artistName = root.path("item").path("artists").elements().next().get("name").toString().replace("\"", "");
+            String artistName = type.equals("track") ?
+                    root.path("item").path("artists").elements().next().get("name").toString().replace("\"", ""):
+                    root.path("item").path("show").get("name").toString().replace("\"", "");
             String songName = root.path("item").get("name").toString().replace("\"", "");
             String songId = root.path("item").get("id").toString().replace("\"", "");
+            String songDuration = root.path("item").get("duration_ms").toString().replace("\"", "");
+            String progress = root.get("progress_ms").toString().replace("\"", "");
 
             // We're done with the HTTP connection now
             getConn.disconnect();
 
             // Stores the data in a map for easy access elsewhere
+            songData.put("type", type);
             songData.put("imageUrl", imageUrl);
             songData.put("artistName", artistName);
             songData.put("songName", songName);
             songData.put("songId", songId);
+            songData.put("songDuration", songDuration);
+            songData.put("progress", progress);
 
             // If the current song is the same as the previous song (likely happens often if we're polling every second), don't bother updating things
             Identifier id = new Identifier(SpotifyIntegrationMod.MOD_ID, songId.toLowerCase());
@@ -87,9 +98,7 @@ public class SpotifyAPI {
             }
         } else {
             // If we don't do this, we won't know when a song ISN'T playing.
-            songData.put("imageUrl", null);
-            songData.put("artistName", null);
-            songData.put("songName", null);
+            songData.replaceAll((i, v) -> null);
             currentId = null;
         }
     }

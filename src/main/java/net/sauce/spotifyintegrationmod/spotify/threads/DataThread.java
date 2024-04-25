@@ -13,7 +13,7 @@ public class DataThread implements Runnable {
             try {
                 // The client must be open and an access token must have been acquired before attempting to get data
                 if(AuthServer.authorized && MinecraftClient.getInstance() != null &&
-                        MinecraftClient.getInstance().getTextureManager() != null && SongHudOverlay.showSong == 1) {
+                        MinecraftClient.getInstance().getTextureManager() != null && SongHudOverlay.showSong) {
                     SpotifyAPI.getData();
                 }
                 Thread.sleep(2000);

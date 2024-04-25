@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Util;
 import net.sauce.spotifyintegrationmod.client.SongHudOverlay;
 import net.sauce.spotifyintegrationmod.spotify.AuthServer;
 import net.sauce.spotifyintegrationmod.spotify.threads.AuthThread;
@@ -31,18 +32,10 @@ public class KeyInputHandler {
                             inAuthProcess = true;
                         }
 
-                        // only works on windows!!
-                        String os = System.getProperty("os.name").toLowerCase();
-                        Runtime rt = Runtime.getRuntime();
                         String url = "http://localhost:8080/login";
-                        if(os.indexOf("win") >= 0) {
-                            rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
-                        } else if(os.indexOf("mac") >= 0) {
-                            rt.exec("open " + url);
-                        }
+                        Util.getOperatingSystem().open(url);
                     } else {
-                        // Alternates showSong between 1 and -1 so that the song HUD element is toggleable.
-                        SongHudOverlay.showSong *= -1;
+                        SongHudOverlay.showSong = !SongHudOverlay.showSong;
                     }
                 }
             } catch(Exception e) {
