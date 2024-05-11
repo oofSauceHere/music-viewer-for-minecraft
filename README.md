@@ -1,6 +1,8 @@
 # music-viewer-for-minecraft
 Creates a HUD element in the top left corner of the Minecraft screen that shows what's currently playing on Spotify. Implements authorization code OAUTH2 flow and handles requests to the Spotify API in Java using multithreading.
 
+---
+
 This isn't done but as of now it functions (on my computer). I'm working on making it useable for other people right now, but it may take a little as this is both my first foray into Minecraft modding *and* my first time retrieving data from a REST API. You'd think I'd have started with Javascript for the latter, but no. I didn't.
 
 Though this is supposed to be a description of the project and how to install it, I figured I'd share the sources I used to figure out how to piece this together. Spotify has a great [web API documentation](https://developer.spotify.com/documentation/web-api) (which I'm sure most web developers know about), and [Kaupenjoe on YouTube](https://www.youtube.com/@ModdingByKaupenjoe) has useful tutorials on how to mod for most Minecraft versions and mod loaders.
