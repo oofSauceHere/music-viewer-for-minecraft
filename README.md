@@ -9,4 +9,4 @@ Though this is traditionally a description of the project and how to install it,
 
 There's also an already existing mod that has a similar functionality. It's called [Spoticraft](https://github.com/IMB11/Spoticraft), and I'd occasionally use the repo for reference. This project is entirely mine, though, because I wanted to learn and implement myself. One of the major differences is that I wrote the code to fetch data from Spotify's API myself, while they used an already existing library. Most normal people would choose to use that library, but because I ~am foolish~ wanted a more robust understanding of web APIs, I did it myself.
 
-inshallah i will never have to use java again
+inshallah i will never have to use java again (joke)
