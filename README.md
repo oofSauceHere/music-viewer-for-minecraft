@@ -3,7 +3,7 @@ Creates a HUD element in the top left corner of the Minecraft screen that shows 
 
 ---
 
-This project works, but still has some issues that need fixing. I'm working on making it useable for other people right now, but it may take a little as this is both my first foray into Minecraft modding *and* my first time retrieving data from a REST API. You'd think I'd have started with Javascript for the latter, but no. I didn't.
+This project works, but still has some issues that need fixing. I'm working on making it useable for other people right now, but it may take a little as this is both my first foray into Minecraft modding *and* my first time retrieving data from a REST API. You'd think I'd have started with JavaScript for the latter, but no. I didn't.
 
 Though this is traditionally a description of the project and how to install it, I figured I'd share the sources I used to figure out how to piece this together. Spotify has a great [web API documentation](https://developer.spotify.com/documentation/web-api) (which I'm sure most web developers know about), and [Kaupenjoe on YouTube](https://www.youtube.com/@ModdingByKaupenjoe) has useful tutorials on how to mod for most Minecraft versions and mod loaders.
 
