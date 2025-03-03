@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "spotifymc",
+	"version": "${version}",
+	"name": "Spotify MC",
+	"description": "Creates a HUD element in the top left corner that shows what's currently playing on Spotify.",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/spotifymc/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.oofsauce.spotifymc.SpotifyMC"
+		],
+		"client": [
+			"net.oofsauce.spotifymc.SpotifyMCClient"
+		],
+		"fabric-datagen": [
+			"net.oofsauce.spotifymc.SpotifyMCDataGenerator"
+		]
+	},
+	"mixins": [
+		"spotifymc.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
